@@ -1,0 +1,92 @@
+<template>
+  <section class=" mx-auto container max-w-2xl md:w-3/4 ">
+    <form @submit.prevent="submit" class="space-y-6">
+      <div>
+        <ul v-for="(error, key) in errors" :key="key">
+          <li class="text-xs text-red-500" v-text="error[0]"></li>
+        </ul>
+      </div>
+
+      <div class="md:inline-flex space-y-4 md:space-y-0 w-full p-4 text-gray-500 items-center">
+        <h2 class="md:w-1/3 max-w-sm mx-auto">Account</h2>
+        <div class="md:w-2/3 max-w-sm mx-auto">
+          <label for="email" class="text-sm text-gray-400">Email</label>
+          <input v-model="user.email"
+                 :class="{'border border-red-500' : errors.email}"
+                 @keydown="errors.email=''"
+                 id="email"
+                 type="email"
+                 class="w-11/12 focus:outline-none rounded focus:text-gray-600 p-2"
+                 placeholder="email@example.com" />
+        </div>
+      </div>
+      <hr />
+
+      <div class="md:inline-flex  space-y-4 md:space-y-0  w-full p-4 text-gray-500 items-center">
+        <h2 class="md:w-1/3 mx-auto max-w-sm">Personal info</h2>
+        <div class="md:w-2/3 mx-auto max-w-sm space-y-5">
+          <div class="w-full">
+            <label for="name" class="text-sm text-gray-400">Full name</label>
+            <input v-model="user.name"
+                   :class="{'border border-red-500' : errors.name}"
+                   @keydown="errors.name=''"
+                   type="text"
+                   id="name"
+                   class="w-11/12 focus:outline-none  rounded focus:text-gray-600 p-2"
+                   placeholder="Charly Olivas" />
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="md:inline-flex w-full space-y-4 md:space-y-0 p-8 text-gray-500 items-center">
+        <h2 class="md:w-4/12 max-w-sm mx-auto">Change password</h2>
+
+        <div class="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5 md:inline-flex pl-2">
+          <input v-model="user.password"
+                 :class="{'border border-red-500' : errors.password}"
+                 @keydown="errors.password=''"
+                 type="password"
+                 class="w-11/12 focus:outline-none  rounded focus:text-gray-600 p-2 ml-4"
+                 placeholder="New" />
+        </div>
+
+        <div class="md:w-3/12 text-center md:pl-6">
+          <button
+              class="text-white hover:bg-indigo-600 w-full mx-auto max-w-sm rounded-md text-center bg-indigo-400 py-2 px-4 inline-flex items-center justify-center focus:outline-none md:float-right">
+            create
+          </button>
+        </div>
+      </div>
+      <hr />
+    </form>
+  </section>
+</template>
+
+<script>
+export default {
+  name: "Create",
+  data() {
+    return {
+      user: {},
+      errors: {},
+    }
+  },
+  methods: {
+    async submit() {
+      try {
+        await axios.post("/api/user/store", this.user);
+        await this.$router.push({name: 'user'})
+      } catch ({response}) {
+        this.errors = response.data.errors;
+      }
+    }
+  },
+}
+</script>
+
+<style scoped>
+
+</style>
